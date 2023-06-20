@@ -9,6 +9,12 @@ A planar graph is one that can be embedded (or drawn) in the plane without edge-
 In 2021, my PhD advisors, Marthe Bonamy and Nicolas Bonichon, and I proved that Gallai'sconjecture holds on planar graphs.
 Our paper: https://arxiv.org/abs/2110.08870
 
+## Summary of the proof
+
+We prove a stronger version of the result: apart from two exceptions, K3 and K5- (K5 minus one edge), all connected planar graphs have a path-decomposition into floor(n/2) paths.
+
+Our proof operates by considering a hypothetical counterexample to the conjecture: a connected planar graph that does not have a path-decomposition into floor(n/2) paths.
+
 ## Program
 
 In this project, I attempt to code the algorithm we implicitly describe in our proof. The proof 95 pages long, but it is constructive. However, two parts of it will be especially tricky to implement: the use of a proof by Yu (1998) to prove the existence of a K4-subdivision in our "almost 4-connected" planar graph, and a lemma by Chu, Fan, Liu (2021) to show how to decompose our K3 and K5- components into 2 paths.
