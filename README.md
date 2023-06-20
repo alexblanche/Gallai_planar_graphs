@@ -26,5 +26,9 @@ To reduce a configuration, we remove the 2 or 4 vertices, along with the edges o
 ## Program
 
 In this project, I attempt to code the algorithm we implicitly describe in our proof. The proof 95 pages long, but it is constructive. However, two parts of it will be especially tricky to implement: the use of a proof by Yu (1998) to prove the existence of a K4-subdivision in our "almost 4-connected" planar graph, and a lemma by Chu, Fan, Liu (2021) to show how to decompose our K3 and K5- components into 2 paths.
+I am looking for alternative algorithms for these parts.
 
+### Files
 
+- graph_types.ml: Definition of the basic types for graphs, along with their accessors and mutators, conversion functions between types, and miscellaneous graph-related functions.
+- miscellaneous.ml: Miscellaneous non-graph-related functions.
