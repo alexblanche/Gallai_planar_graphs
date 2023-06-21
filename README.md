@@ -3,7 +3,7 @@
 ## Introduction
 
 A path-decomposition of a graph is a partition of its edges into simple paths. In 1968, Tibor Gallai conjectured that any connected graph with n vertices has a path-decomposition into ceiling(n/2) paths. The conjecture is still open as of today.
-For more info, my PhD thesis: https://www.labri.fr/perso/ablanche/data/Manuscript.pdf
+For more information, my PhD thesis: https://www.labri.fr/perso/ablanche/data/Manuscript.pdf
 
 A planar graph is one that can be embedded (or drawn) in the plane without edge-crossings.
 In 2021, my PhD advisors, Marthe Bonamy and Nicolas Bonichon, and I proved that Gallai'sconjecture holds on planar graphs.
@@ -32,3 +32,4 @@ I am looking for alternative algorithms for these parts.
 
 - graph_types.ml: Definition of the basic types for graphs, along with their accessors and mutators, conversion functions between types, and miscellaneous graph-related functions.
 - miscellaneous.ml: Miscellaneous non-graph-related functions.
+- dijkstra.ml: Dijkstra's algorithm
