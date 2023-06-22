@@ -33,3 +33,8 @@ I am looking for alternative algorithms for these parts.
 - graph_types.ml: Definition of the basic types for graphs, along with their accessors and mutators, conversion functions between types, and miscellaneous graph-related functions.
 - miscellaneous.ml: Miscellaneous non-graph-related functions.
 - dijkstra.ml: Dijkstra's algorithm
+- reductions.ml: Types and functions for the reductions and recolorings
+- config0.ml: Encoding of the (only) C0 configuration and its reduction rule
+- config1, config2.ml: (TODO) Encoding of the CI and CII configurations reduction rule and tree of decomposition
+- k4subd.ml: (TODO) Function that computes a K4-subdivision (or a C4+-subdivision) rooted on 4 specified vertices of degree 5
+- main.ml: Main function, that computes a good decomposition of a given planar graph
