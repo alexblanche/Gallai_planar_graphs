@@ -9,7 +9,7 @@
 	- Define a half-rule for each case of case of half-rule
 	- combine_half h1 h2 s: returns a rule that combines 2 half-rules h1 and h2, associated with the path (s : edge list)
 *)
-
+(* TODO *)
 let rec all_C1 (g : graph) (r : reduction) =
   ()
 ;;

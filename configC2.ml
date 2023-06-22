@@ -10,7 +10,7 @@ CII
   - is_there_C2: returns four vertices and the type of CII configuration (implemented like the tree of cases)
   - combine_patterns pl s: returns a rule that combines a set of 2 to 4 patterns (from a list pl), associated with the subdivision (s: edge list)
 *)
-
+(* TODO *)
 let rec all_C2 (g : graph) (r : reduction) =
     ()
 ;;
