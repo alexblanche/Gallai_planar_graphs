@@ -49,5 +49,5 @@ let rec all_C0 (g : graph) (r : reduction) =
     | Some u -> (let ru = rule_C0 g u in
                 reducel g ru.op;
                 add_rule r ru;
-                all_C0 ()
+                all_C0 g r
                 );;
