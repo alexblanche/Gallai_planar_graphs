@@ -33,7 +33,7 @@ let gallai (g : graph) =
 
 (* TODO :
 	- find a way to implement the safety algorithm...
-  -> Do a graphic visualizer
+  - Do a graphic visualizer
 	
 	CI
 	- Define type of half-rule: CV of int list | CN of int list | ...

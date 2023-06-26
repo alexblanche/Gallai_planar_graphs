@@ -12,3 +12,13 @@ let pairs_of l =
 			| h::t -> aux t (List.rev_append (pair_x h t) acc)
 	in
 	aux l [];;
+
+let array_find (f : 'a -> bool) (t : 'a array) =
+	let rec aux i =
+	if i = Array.length t
+		then raise Not_found
+		else if f t.(i)
+			then i
+			else aux (i+1)
+	in
+	aux 0;;
