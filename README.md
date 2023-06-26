@@ -38,3 +38,4 @@ I am looking for alternative algorithms for these parts.
 - config1, config2.ml: (TODO) Encoding of the CI and CII configurations reduction rule and tree of decomposition
 - k4subd.ml: (TODO) Function that computes a K4-subdivision (or a C4+-subdivision) rooted on 4 specified vertices of degree 5
 - main.ml: Main function, that computes a good decomposition of a given planar graph
+- components.ml: Functions that search for and color K3 and K5- components (the safety algorithm is not yet implemented)
