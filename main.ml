@@ -3,6 +3,7 @@
 #use "miscellaneous.ml";;
 #use "graph_types.ml";;
 #use "dijkstra.ml";;
+#use "colors.ml";;
 #use "reductions.ml";;
 #use "configC0.ml";;
 #use "configC1.ml";;
@@ -26,7 +27,7 @@ let build_reduction (og : graph) =
 
 let gallai (g : graph) =
 	let r = build_reduction g in
-	(* temporary *)
+	(* temporary: to be replaced by a bruteforce on a very small graph *)
 	let cg = generic_coloring r.g in
 	apply_recoloring r cg;;
 

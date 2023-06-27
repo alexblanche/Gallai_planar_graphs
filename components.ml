@@ -1,44 +1,5 @@
 (* Coloring components: safety algorithm *)
-(* The goal is to decompose a  *)
-
-(* Returns true if vertex i touches color c in the colored graph cg *)
-let touches_color (cg : colored_graph) (i : int) (c : color) =
-  let el = present_edges cg.cg i in
-  let f e = get_color cg i e.edge_end = Some c in
-  List.exists f el;;
- 
-(* Greedy algorithm that gives a naive path-coloring of a graph *)
-(* Temporary function, only for testing purposes, not to be used in the final program *)
-let naive_coloring (cg : colored_graph) (vl : int list) =
-  (* Returns true if at least one edge was found *)
-  let rec add_path (i : int) (c : color) (b : bool) =
-    try
-      let f e = ((get_color cg i e.edge_end) = None) && (List.mem e.edge_end vl) && not (touches_color cg e.edge_end c) in
-      let j = List.find f (present_edges cg.cg i) in
-      set_color cg i j.edge_end c;
-      add_path j.edge_end c true
-    with
-      | Not_found -> b
-  in
-  (* Returns true if at least one edge was found *)
-  let search_twice (i : int) (c : color) =
-    match (present_edges cg.cg i) with
-    | [] -> false
-    | [_] -> add_path i c false
-    | e1::e2::_ -> (let _ = add_path i c false in
-               add_path i c false)
-  in
-  (* Applies new colors until all edges incident with i are colored *)
-  let rec loop (i : int) (c : color) =
-    if search_twice i c
-      then loop i (new_color cg)
-  in
-  (*let rec aux = function
-      | [] -> ()
-      | i::t -> (loop i (new_color cg); aux t)
-  in aux vl;;*)
-  List.iter (fun i -> loop i (new_color cg)) vl;;
-(* Untested *)	
+(* The goal is to decompose a component, made up of a cycle and a path with an intersection of at most 5 vertices, into two paths *)
   
 let is_component_k3 (g : graph) (vl : int list) =
   match vl with
@@ -77,9 +38,8 @@ let color_k5m (cg : colored_graph) (vl : int list) =
                set_color cg b e co;
                set_color cg e a co)
     | _ -> failwith "color_k5m: Component not a K5-";;
-  
-  
-(* Returns a coloring with cycles for K3,K5- and only paths for the other components *)
+
+(* Returns a (naive) coloring with cycles for K3,K5- and only paths for the other components *)
 let pc_coloring (cg : colored_graph) (components : int list list) =
   (*let rec aux = function
     | [] -> ()
@@ -99,7 +59,7 @@ let pc_coloring (cg : colored_graph) (components : int list list) =
   in List.iter f components;;
 
   
-  (* Returns a list of components, as a list of vertices *)
+(* Returns a list of components, as a list of vertices *)
 let split_components (g : graph) =
   let n = number_of_vertices g in
   let t = 	Array.make n false in
@@ -134,13 +94,6 @@ let split_components (g : graph) =
   is_component_k3 g3 l2;;
 *)
   
-(* Returns the first intersection and the rest of the list, or Not_found *)
-let rec find_first_inter (l1 : 'a list) (l2 : 'a list) =
-  match l1 with
-    | [] -> raise Not_found
-    | h::t -> if List.mem h l2 then (h,t)
-            else find_first_inter t l2;;
-  
 (* Colors a cycle (a1,a2,...,an), where a1=beg, with color col *)
 let color_whole_cycle (cg : colored_graph) (c : int list) (col : color) =
   (*let rec aux prec = function
@@ -155,32 +108,24 @@ let color_whole_cycle (cg : colored_graph) (c : int list) (col : color) =
     | [_] -> failwith "color_whole_cycle: error 2"
     | a::b::t -> let last = aux a (b::t) in set_color cg a last col;;
   
-(* Colors a path (a1,a2,...,an), where a1=beg, with color c1 until i1, then c2 *)
+(* Colors a path (a1,a2,...,an), where a1=beg, with color c1 until i1, then with color c2 *)
 let rec color_path (cg : colored_graph) (i1 : int) (c1 : color) (c2 : int) = function
-    | ph::ps::pt -> if ps=i1 then (set_color cg ph ps c1; color_path cg i1 c1 c2 (ps::pt))
-                else (set_color cg ph ps c1; color_path cg i1 c1 c2 (ps::pt))
+    | ph::ps::pt ->
+      if ps=i1
+        then (set_color cg ph ps c1; color_path cg i1 c1 c2 (ps::pt))
+        else (set_color cg ph ps c1; color_path cg i1 c1 c2 (ps::pt)) (* Error here?? *)
     | _ -> ();;
-  
-let rec find_last = function
-  | [] -> failwith "find_last: empty list"
-  | [a] -> a
-  | _::t -> find_last t;;
-(* For fun:
-let find_last = function
-  | [] -> failwith "find_last: empty list"
-  | a::t -> List.fold_left (fun _ x -> x) a t;;
-*)
   
 (* Returns the predecessor and successor of i1 in the path p *)
 let find_succ_path (i1 : int) (p : int list) =
   let rec aux prec = function
-    | [] -> failwith "find_succ_cycle: not found 1"
-    | [a] -> if a=i1 then (Some prec,None) else failwith "find_succ_cycle: not found 2"
+    | [] -> failwith "find_succ_path: not found 1"
+    | [a] -> if a=i1 then (Some prec,None) else failwith "find_succ_path: not found 2"
     | a::b::t -> if a=i1 then (Some prec,Some b) else aux a (b::t)
   in
   match p with
-    | [] -> failwith "find_succ_cycle: not found 3"
-    | [_] -> failwith "find_succ_cycle: not found 4"
+    | [] -> failwith "find_succ_path: not found 3"
+    | [_] -> failwith "find_succ_path: not found 4"
     | h1::h2::t -> if h1=i1 then (None,Some h2) else aux h1 (h2::t);;
   
 (* Returns the predecessor and successor of i1 in the cycle c *)
@@ -194,7 +139,8 @@ let find_succ_cycle (i1 : int) (c : int list) =
     | [] -> failwith "find_succ_cycle: not found 3"
     | [_] -> failwith "find_succ_cycle: not found 4"
     | h1::h2::t -> if h1=i1 then (h2,find_last t) else aux h1 h1 (h2::t);;
-  
+
+(* Color the path p with color c1 from the beginning to vertex i *)
 let color_until (cg : colored_graph) (i : int) (p : int list) (c1 : color) =
   let rec aux prec = function
     | [] -> ()
@@ -203,16 +149,18 @@ let color_until (cg : colored_graph) (i : int) (p : int list) (c1 : color) =
   match p with
     | [] -> ()
     | h::t -> if h<>i then aux h t;;
-  
+
+(* Color the section of the path p between vertices i1 and i2 with color c1 *)
 let color_section (cg : colored_graph) (i1 : int) (i2 : int) (p : int list) (c1 : color) =
   let rec aux = function
     | [] -> ()
     | h::t -> if h=i1
-            then color_until cg i2 t c1
+            then color_until cg i2 (i1::t) c1
             else aux t
   in
   aux p;;
-  
+
+(* Color the path p with color c1 from vertex i to the end *)
 let color_from (cg : colored_graph) (i1 : int) (p : int list) (c1 : color) =
   color_section cg i1 (-1) p c1;;
   
@@ -317,3 +265,4 @@ let decomp_cyclepath (cg : colored_graph) (p : int list) (c : int list) (c1 : co
 
 (* Maybe try to compute a decomposition of C + P into 2P from scratch with a specific algorithm? *)
 (* Problem: it's an NP-complete problem. *)
+

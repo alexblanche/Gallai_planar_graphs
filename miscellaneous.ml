@@ -13,12 +13,46 @@ let pairs_of l =
 	in
 	aux l [];;
 
+(* Returns the position of an element of array t that satisfies the predicate f *)
+(* If no such element exists, the function raises the exception Not_found (like List.find) *)
 let array_find (f : 'a -> bool) (t : 'a array) =
+	let n = Array.length t in
 	let rec aux i =
-	if i = Array.length t
+	if i = n
 		then raise Not_found
 		else if f t.(i)
 			then i
 			else aux (i+1)
 	in
 	aux 0;;
+
+(* Returns the last element of a list *)
+let rec find_last = function
+  | [] -> failwith "find_last: empty list"
+  | [a] -> a
+  | _::t -> find_last t;;
+(* For fun:
+let find_last = function
+  | [] -> failwith "find_last: empty list"
+  | a::t -> List.fold_left (fun _ x -> x) a t;;
+*)
+
+(* Returns an element present exactly one in a list *)
+(* If no such element exists, the function raises the exception Not_found (like List.find) *)
+let rec find_unique = function
+		| [] -> raise Not_found
+		| h::t -> if not (List.mem h t)
+						then h
+						else find_unique (List.filter (fun x -> x<>h) t);;
+
+(* find_unique [2;5;1;8;3;5;8;2;7;3;1;5];; *)
+
+(* Returns the first intersection of the lists l1 and l2, and the end of the list l1 after the intersection
+If the lists are disjoint, raises Not_found *)
+let rec find_first_inter (l1 : 'a list) (l2 : 'a list) =
+  match l1 with
+    | [] -> raise Not_found
+    | h::t ->
+      if List.mem h l2
+        then (h,t)
+        else find_first_inter t l2;;
