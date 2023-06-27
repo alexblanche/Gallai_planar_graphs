@@ -65,8 +65,6 @@ type graph = {
 };;
 
 
-
-
 (* Accessors and mutators *)
 
 let number_of_vertices (g : graph) = Array.length g.v;;
@@ -107,6 +105,7 @@ let is_present_edge (g : graph) (i : int) (j : int) =
 
 (* is_present_edge g 0 2;; *)
 
+(* Returns the neighbors of i (linked with i with a present edge) *)
 let present_edges (g : graph) (i : int) =
 	List.filter (fun x -> is_present_edge g i x.edge_end) g.e.(i);;
 

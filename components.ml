@@ -26,17 +26,10 @@ let color_k5m (cg : colored_graph) (vl : int list) =
   let (a,b) = find_the_non_edge_k5m cg.cg vl in
   let rest = List.filter (fun x -> x<>a && x<>b) vl in
   match rest with
-    | [c;d;e] -> let pa = new_color cg in
-              (set_color cg a c pa;
-               set_color cg c e pa;
-               set_color cg e d pa;
-               set_color cg d b pa;
+    | [c;d;e] -> (let pa = new_color cg in
+               color_path cg [a;c;e;d;b] pa;
                let co = new_color cg in
-               set_color cg a d co;
-               set_color cg d c co;
-               set_color cg c b co;
-               set_color cg b e co;
-               set_color cg e a co)
+               color_cycle cg [a;d;c;b;e] co)
     | _ -> failwith "color_k5m: Component not a K5-";;
 
 (* Returns a (naive) coloring with cycles for K3,K5- and only paths for the other components *)
@@ -94,28 +87,6 @@ let split_components (g : graph) =
   is_component_k3 g3 l2;;
 *)
   
-(* Colors a cycle (a1,a2,...,an), where a1=beg, with color col *)
-let color_whole_cycle (cg : colored_graph) (c : int list) (col : color) =
-  (*let rec aux prec = function
-    | [] -> failwith "color_whole_cycle: error 3"
-    | [a] -> (set_color cg prec a col; a)
-    | a::t -> (set_color cg prec a col; aux a t)
-  in
-  *)
-  let aux prec l = List.fold_left (fun pr a -> set_color cg pr a col; a) prec l in 
-  match c with
-    | [] -> failwith "color_whole_cycle: error 1"
-    | [_] -> failwith "color_whole_cycle: error 2"
-    | a::b::t -> let last = aux a (b::t) in set_color cg a last col;;
-  
-(* Colors a path (a1,a2,...,an), where a1=beg, with color c1 until i1, then with color c2 *)
-let rec color_path (cg : colored_graph) (i1 : int) (c1 : color) (c2 : int) = function
-    | ph::ps::pt ->
-      if ps=i1
-        then (set_color cg ph ps c1; color_path cg i1 c1 c2 (ps::pt))
-        else (set_color cg ph ps c1; color_path cg i1 c1 c2 (ps::pt)) (* Error here?? *)
-    | _ -> ();;
-  
 (* Returns the predecessor and successor of i1 in the path p *)
 let find_succ_path (i1 : int) (p : int list) =
   let rec aux prec = function
@@ -139,60 +110,36 @@ let find_succ_cycle (i1 : int) (c : int list) =
     | [] -> failwith "find_succ_cycle: not found 3"
     | [_] -> failwith "find_succ_cycle: not found 4"
     | h1::h2::t -> if h1=i1 then (h2,find_last t) else aux h1 h1 (h2::t);;
-
-(* Color the path p with color c1 from the beginning to vertex i *)
-let color_until (cg : colored_graph) (i : int) (p : int list) (c1 : color) =
-  let rec aux prec = function
-    | [] -> ()
-    | h::t -> (set_color cg prec h c1; if h<>i then aux h t)
-  in
-  match p with
-    | [] -> ()
-    | h::t -> if h<>i then aux h t;;
-
-(* Color the section of the path p between vertices i1 and i2 with color c1 *)
-let color_section (cg : colored_graph) (i1 : int) (i2 : int) (p : int list) (c1 : color) =
-  let rec aux = function
-    | [] -> ()
-    | h::t -> if h=i1
-            then color_until cg i2 (i1::t) c1
-            else aux t
-  in
-  aux p;;
-
-(* Color the path p with color c1 from vertex i to the end *)
-let color_from (cg : colored_graph) (i1 : int) (p : int list) (c1 : color) =
-  color_section cg i1 (-1) p c1;;
   
 (*
 (* colors p with c1 until i1, then c2; colors c with c2 except the edge i1j1 with c1 *)
 let color_1inter (cg : colored_graph) (p : int list) (i1 : int) (c : int list) (c1 : color) (c2 : color) =
   match c with
     | [] -> failwith "color_1inter: empty cycle"
-    | ch::_ -> (color_whole_cycle cg ch c c2;
+    | ch::_ -> (color_cycle cg ch c c2;
              let (j1,_) = find_succ_cycle i1 c in
              set_color cg i1 j1 c1;
-             color_path cg i1 c1 c2 p);;
+             color_path_two_colors cg i1 c1 c2 p);;
   
 let color_2inter (cg : colored_graph) (p : int list) (i1 : int) (i2 : int) (c : int list) (c1 : color) (c2 : color) =
   match c with
     | [] -> failwith "color_2inter: empty cycle"
-    | ch::_ -> (color_whole_cycle cg ch c c2;
+    | ch::_ -> (color_cycle cg ch c c2;
              let (j2,j2') = find_succ_cycle i2 c in
              set_color cg i2 (if List.mem j2 p then j2' else j2) c1;
-             color_path cg i2 c1 c2 p);;
+             color_path_two_colors cg i2 c1 c2 p);;
 *)
   
 (*
 let color_ninter (cg : colored_graph) (p : int list) (c : int list) (i4 : int) (i5 : int)  (c1 : color) (c2 : color) =
   match c with
     | [] -> failwith "color_ninter: empty cycle"
-    | ch ::_ -> (color_whole_cycle cg ch c c2;
+    | ch ::_ -> (color_cycle cg ch c c2;
               let (j5,j5') = find_succ_cycle i5 c in
               if not (List.mem j5 p)
-                then (set_color cg i5 j5 c1; color_path cg i5 c1 c2 p)
+                then (set_color cg i5 j5 c1; color_path_two_colors cg i5 c1 c2 p)
                 else if not (List.mem j5' p)
-                  then (set_color cg i5 j5' c1; color_path cg i5 c1 c2 p)
+                  then (set_color cg i5 j5' c1; color_path_two_colors cg i5 c1 c2 p)
                   else
 *)
 (* Does not work *)
@@ -207,7 +154,7 @@ let decompPC1 (cg : colored_graph) (p : int list) (c : int list) (i1 : int) (c1 
   let (j1,j1') = find_succ_cycle i1 c in
   color_until cg i1 p c1;
   color_from cg i1 p c2;
-  color_whole_cycle cg c c1;
+  color_cycle cg c c1;
   set_color cg i1 (if not (List.mem j1 p) then j1 else j1') c2;;
  
 (* We assume j1,j1' belong to p *)
@@ -219,7 +166,7 @@ let decompPC2 (cg : colored_graph) (p : int list) (c : int list) (i1 : int) (c1 
   (* Assuming j2 does not belong to c, switch j1,j1' and j2,j3 if needed *)
   let aux (j1 : int) (j1' : int) (j2 : int) (j3 : int) =
     color_until cg i1 p c1;
-    color_whole_cycle cg c c1;
+    color_cycle cg c c1;
     set_color cg i1 j1 c2;
     set_color cg j1 j2 c1;
     color_section cg i1 j2 p c2;
