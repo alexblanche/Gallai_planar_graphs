@@ -79,7 +79,7 @@ let edge_list_to_neighbors (l : edge list) =
 
 let neighbors (g : graph) (i : int) = edge_list_to_neighbors g.e.(i);;
 
-let is_present_vert (g : graph) = fun i -> g.v.(i).vert_present;;
+let is_present_vert (g : graph) (i : int) = g.v.(i).vert_present;;
 
 let flip_vert (g : graph) (i : int) =
 	if (i < 0) || (i > number_of_vertices g)

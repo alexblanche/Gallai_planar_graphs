@@ -3,6 +3,15 @@
 (* Counts the number of elements of l that satisfy the predicate p *)
 let count p l = List.length (List.filter p l);;
 
+(* Returns the list [0,...,n-1] *)
+let range (n : int) =
+	let rec aux acc k =
+		if k=0
+			then 0::acc
+			else aux (k::acc) (k-1)
+	in
+	aux [] (n-1);;
+
 (* Generates all the pairs of elements of l *)
 let pairs_of l =
 	let pair_x x = List.map (fun y -> (x,y)) in

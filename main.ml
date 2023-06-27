@@ -8,6 +8,8 @@
 #use "configC0.ml";;
 #use "configC1.ml";;
 #use "configC2.ml";;
+#use "union_find.ml";;
+#use "path_check.ml";;
 #use "components.ml";;
 
 
