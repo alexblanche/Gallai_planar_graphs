@@ -93,7 +93,6 @@ let color_path (cg : colored_graph) (p : int list) (col : color) =
     | [_] -> failwith "color_path: error 2"
     | a::b::t -> let _ = aux a (b::t) in ();;
 
-  
 (* Colors a cycle (a1,a2,...,an), where a1=beg, with color col *)
 let color_cycle (cg : colored_graph) (c : int list) (col : color) =
   (*let rec aux prec = function
@@ -140,7 +139,7 @@ let rec color_path_two_colors (cg : colored_graph) (i1 : int) (c1 : color) (c2 :
         else (set_color cg ph ps c1; color_path_two_colors cg i1 c1 c2 (ps::pt))
     | _ -> ();;
 (* Alternative: less efficient
-let rec color_path_two_colors cg i1 c1 c2 =
+let color_path_two_colors cg i c1 c2 =
   color_until cg i l c1;
   color_from cg i l c2;;
 *)

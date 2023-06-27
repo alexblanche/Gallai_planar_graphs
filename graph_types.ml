@@ -206,9 +206,7 @@ let gen_to_graph (h : gen_graph) =
 
 let graph_to_gen (g : graph) = {
 	gen_n = number_of_vertices g;
-	gen_e = Array.map
-				edge_list_to_neighbors
-				g.e;
+	gen_e = Array.map	edge_list_to_neighbors g.e;
 };;
 
 (* let gen_g2 = graph_to_gen g;; *)
@@ -237,3 +235,15 @@ let copy_of_graph (g : graph) =
 	let e' = Array.copy g.e in
 	{v = v'; e = e'};;
 
+(* Returns the list of edges (pair of vertices) of the graph *)
+let graph_to_list_of_edges (g : graph) =
+	let n = number_of_vertices g in
+	let rec aux acc i =
+		if i = n
+			then acc
+			else (let neigh = neighbors g i in
+				(* if x>i: in order to avoid duplicates *)
+				List.fold_left (fun a x -> if x>i then (i,x)::a else a) acc neigh;
+				aux acc (i+1))
+	in
+	aux [] 0;;
