@@ -17,9 +17,12 @@ let set_color (cg : colored_graph) (i : int) (j : int) (c : color) =
 	cg.cc.(i).(j) <- Some c;
 	cg.cc.(j).(i) <- Some c;;
 
+let number_of_colors (cg : colored_graph) =
+  cg.nc;;
+
 (* Returns a colored that is not used by the colored graph cg, and updates the number of colors used by cg *)
 let new_color (cg : colored_graph) =
-	let n = cg.nc in
+	let n = number_of_colors cg in
 	cg.nc <- n+1;
 	n;;
 

@@ -27,11 +27,11 @@ let pairs_of l =
 let array_find (f : 'a -> bool) (t : 'a array) =
 	let n = Array.length t in
 	let rec aux i =
-	if i = n
-		then raise Not_found
-		else if f t.(i)
-			then i
-			else aux (i+1)
+		if i = n
+			then raise Not_found
+			else if f t.(i)
+				then i
+				else aux (i+1)
 	in
 	aux 0;;
 
@@ -65,3 +65,8 @@ let rec find_first_inter (l1 : 'a list) (l2 : 'a list) =
       if List.mem h l2
         then (h,t)
         else find_first_inter t l2;;
+
+let maxl (l : int list) =
+	match l with
+	| [] -> failwith "max: empty list"
+	| h::t ->	List.fold_left (fun a x -> if x>a then x else a) h t

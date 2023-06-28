@@ -24,8 +24,7 @@ let build_reduction (og : graph) =
 	(* CII configuration *)
 	all_C2 g r;
 	(* end *)
-	(* {g = copy_of_graph og; rules = r.rules} *) (* Version with base graph *)
-	r (* Version with reduced graph in reduction *);;
+	r;;
 
 let gallai (g : graph) =
 	let r = build_reduction g in
