@@ -186,7 +186,7 @@ let modify_embedding (vlp : vertex_coordinates list) (elp : simple_edge list) : 
 	!vl;;
 
 (* Returns the pair (vl,el), where vl is the list of vertices and el the list of the edges *)
-let interface () : unit =
+let interface () : vertex_coordinates list * simple_edge list =
 	init ();
 	let avl = add_vertices 0 [] [] in
 	let el = add_edges avl [] in
@@ -211,3 +211,13 @@ let print_graph (g : graph) (vl : vertex_coordinates list) : unit =
 	display vl el (fun () -> ());
 	wait_for_space ();
 	close_graph ();;
+
+(* Test of the basic embedding *)
+(*
+let test n =
+	let vl = generate_embedding n in
+	let g = list_of_edges_to_graph n [] in
+	print_graph g vl
+in
+test 50;;
+*)

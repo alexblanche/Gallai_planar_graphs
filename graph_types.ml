@@ -100,7 +100,7 @@ let is_present_edge (g : graph) (i : int) (j : int) : bool =
 (* is_present_edge g 0 2;; *)
 
 (* Returns the neighbors of i (linked with i with a present edge) *)
-let present_edges (g : graph) (i : int) : bool =
+let present_edges (g : graph) (i : int) : edge list =
 	List.filter (fun x -> is_present_edge g i x.edge_end) g.e.(i);;
 
 (* let v = {n = 1; vert_present = true};;
@@ -208,7 +208,7 @@ let list_of_edges_to_graph (n : int) (el : simple_edge list) : graph =
 (* Conversion of a sequence of vertices to a list of edges (of type simple_edge list) *)
 (* seq_to_list_of_edges [2;3;5] 0 = [(2,0);(3,2);(5,3)] *)
 let seq_to_list_of_edges (seq : int list) (vdep : int) : simple_edge list =
-	let (acc,_) = List.fold_left (fun (acc,v) x -> ((x,v)::acc, x)) vdep seq in
+	let (acc,_) = List.fold_left (fun (acc,v) x -> ((x,v)::acc, x)) ([],vdep) seq in
 	acc;;
 (* seq_to_list_of_edges [2;3;5] 0;; *)
 
@@ -241,9 +241,9 @@ let copy_of_graph (g : graph) : graph =
 
 (* Generates a basic embedding of a graph, in a window 1200*600 *)
 let generate_embedding (n : int) =
-	let x = 1200 in
-	let y = 600 in
+	let x = 1200. in
+	let y = 600. in
 	let pi = 3.14159265 in
 	let theta = 2.*.pi/.(float_of_int n) in
-	let r = 0.66 *. float_of_int y in
-	List.map (fun i -> (i,((x/2)+r*.cos ((float_of_int i)*.theta),(y/2)+r*.sin ((float_of_int i)*.theta)))) (range n);;
+	let r = 0.33 *. y in
+	List.map (fun i -> (i,(int_of_float ((x/.2.)+.r*.cos ((float_of_int i)*.theta)),int_of_float ((y/.2.)+.r*.sin ((float_of_int i)*.theta))))) (range n);;
