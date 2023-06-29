@@ -66,7 +66,14 @@ let rec find_first_inter (l1 : 'a list) (l2 : 'a list) =
         then (h,t)
         else find_first_inter t l2;;
 
-let maxl (l : int list) =
+(* Returns a maximum element of the list l *)
+let max_list (l : int list) =
 	match l with
 	| [] -> failwith "max: empty list"
 	| h::t ->	List.fold_left (fun a x -> if x>a then x else a) h t
+
+(* Returns an element of the list l that minimizes function f *)
+let min_list (l : 'a list) (f : 'a -> float) =
+	match l with
+		| [] -> raise Not_found
+		| h::t -> List.fold_left (fun a x -> if f x < f a then x else a) h t;;

@@ -11,6 +11,7 @@
 #use "union_find.ml";;
 #use "path_check.ml";;
 #use "components.ml";;
+#use "visualizer.ml";;
 
 
 (* Main function *)
@@ -23,7 +24,6 @@ let build_reduction (og : graph) =
 	all_C1 g r;
 	(* CII configuration *)
 	all_C2 g r;
-	(* end *)
 	r;;
 
 let gallai (g : graph) =
@@ -34,8 +34,10 @@ let gallai (g : graph) =
 
 
 (* TODO :
-	- find a way to implement the safety algorithm...
-  - Do a graphic visualizer
+	- Implement the safety algorithm
+	- Implement the colors in the visualizer
+	- Implement a bruteforce of a good coloring (to be used on a very small graph in the base case of the recursion)
+	- Integrate the visualization of the graph in the reduction functions
 	
 	CI
 	- Define type of half-rule: CV of int list | CN of int list | ...
