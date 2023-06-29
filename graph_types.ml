@@ -1,7 +1,6 @@
 (* Types (coordinates, generic graphs, colored graphs) and useful functions *)
 
 
-
 (** Vertex and edge types for the graphical interface **)
 
 (* (n,(x,y)), n is the index, (x,y) are the coordinates *)
@@ -213,6 +212,19 @@ let seq_to_list_of_edges (seq : int list) (vdep : int) : simple_edge list =
 	acc;;
 (* seq_to_list_of_edges [2;3;5] 0;; *)
 
+(* Returns the list of edges (simple_edge list) of the graph *)
+let graph_to_list_of_edges (g : graph) : simple_edge list =
+	let n = number_of_vertices g in
+	let add_incident_edges acc0 i =
+		let neigh = neighbors g i in
+		(* if x>i: in order to avoid duplicates *)
+		List.fold_left (fun acc x -> if x>i then (i,x)::acc else acc) acc0 neigh
+	in
+	List.fold_left add_incident_edges [] (range n);;
+(* Complexity = O(|G|), because neighbors = O(degree),
+	 so graph_to_list_of_edges = O(sum of the degrees) = O(number of edges) *)
+
+
 
 
 (** Miscellaneous graph-related functions **)
@@ -227,15 +239,11 @@ let copy_of_graph (g : graph) : graph =
 	let e' = Array.copy g.e in
 	{v = v'; e = e'};;
 
-(* Returns the list of edges (simple_edge list) of the graph *)
-let graph_to_list_of_edges (g : graph) : simple_edge list =
-	let n = number_of_vertices g in
-	let add_incident_edges acc0 i =
-		let neigh = neighbors g i in
-		(* if x>i: in order to avoid duplicates *)
-		List.fold_left (fun acc x -> if x>i then (i,x)::acc else acc) acc0 neigh
-	in
-	List.fold_left add_incident_edges [] (range n);;
-(* Complexity = O(|G|), because neighbors = O(degree),
-	 so graph_to_list_of_edges = O(sum of the degrees) = O(number of edges) *)
-
+(* Generates a basic embedding of a graph, in a window 1200*600 *)
+let generate_embedding (n : int) =
+	let x = 1200 in
+	let y = 600 in
+	let pi = 3.14159265 in
+	let theta = 2.*.pi/.(float_of_int n) in
+	let r = 0.66 *. float_of_int y in
+	List.map (fun i -> (i,((x/2)+r*.cos ((float_of_int i)*.theta),(y/2)+r*.sin ((float_of_int i)*.theta)))) (range n);;

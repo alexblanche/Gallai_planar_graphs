@@ -15,12 +15,12 @@ let range (n : int) =
 (* Generates all the pairs of elements of l *)
 let pairs_of l =
 	let pair_x x = List.map (fun y -> (x,y)) in
-	let rec aux l acc =
+	let rec aux acc l =
 		match l with
 			| [] -> acc
-			| h::t -> aux t (List.rev_append (pair_x h t) acc)
+			| h::t -> aux (List.rev_append (pair_x h t) acc) t
 	in
-	aux l [];;
+	aux [] l;;
 
 (* Returns the position of an element of array t that satisfies the predicate f *)
 (* If no such element exists, the function raises the exception Not_found (like List.find) *)
@@ -36,24 +36,30 @@ let array_find (f : 'a -> bool) (t : 'a array) =
 	aux 0;;
 
 (* Returns the last element of a list *)
-let rec find_last = function
-  | [] -> failwith "find_last: empty list"
-  | [a] -> a
-  | _::t -> find_last t;;
-(* For fun:
 let find_last = function
   | [] -> failwith "find_last: empty list"
   | a::t -> List.fold_left (fun _ x -> x) a t;;
-*)
 
 (* Returns an element present exactly one in a list *)
 (* If no such element exists, the function raises the exception Not_found (like List.find) *)
-let rec find_unique = function
+(* let rec find_unique = function
 		| [] -> raise Not_found
 		| h::t -> if not (List.mem h t)
-						then h
-						else find_unique (List.filter (fun x -> x<>h) t);;
-
+			then h
+			else find_unique (List.filter (fun x -> x<>h) t);; *)
+(* More efficient *)
+let find_unique l =
+	let rec aux seen l =
+		match l with
+		| [] -> raise Not_found
+		| h::t ->
+			if List.mem h seen
+				then aux seen t
+				else if List.mem h t
+					then aux (h::seen) t
+					else h
+	in
+	aux [] l;;
 (* find_unique [2;5;1;8;3;5;8;2;7;3;1;5];; *)
 
 (* Returns the first intersection of the lists l1 and l2, and the end of the list l1 after the intersection
