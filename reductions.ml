@@ -15,15 +15,6 @@ type recoloring = NEW_COLOR of (int * int) list
 
 type rule = {op : operation list; reco : recoloring list};;
 
-(* Type of a coloring *)
-type coloring = (color option) array array;;
-
-let empty_coloring (n : int) = (Array.make_matrix n n None : coloring);;
-
-let color_edge (colo : coloring) (i : int) (j : int) (c : color) =
-	colo.(i).(j) <- Some c;
-	colo.(j).(i) <- Some c;;
-
 (*
 (* Type encapsulating a reduction *)
 (* Reduced graph is obtained by applying the operations of red_stack in order *)

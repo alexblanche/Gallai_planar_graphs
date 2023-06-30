@@ -2,6 +2,15 @@
 
 type color = int;;
 
+(* Type of a coloring *)
+type coloring = (color option) array array;;
+
+let empty_coloring (n : int) = (Array.make_matrix n n None : coloring);;
+
+let color_edge (colo : coloring) (i : int) (j : int) (c : color) : unit =
+	colo.(i).(j) <- Some c;
+	colo.(j).(i) <- Some c;;
+
 (* A graph and its coloring *)
 (* nc = number of colors used *)
 type colored_graph = {cg : graph; cc : coloring; mutable nc : int};;
