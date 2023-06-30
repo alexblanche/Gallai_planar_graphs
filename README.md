@@ -41,3 +41,5 @@ I am looking for alternative algorithms for these parts.
 - main.ml: Main function, that computes a good decomposition of a given planar graph
 - components.ml: Functions that search for and color K3 and K5- components (the safety algorithm is not yet implemented)
 - visualizer.ml: Graphical interface that enables to add vertices, add edges and modify the embedding of a graph
+- constants.ml: Contains the constants of the program
+- tests.ml: For private testing
