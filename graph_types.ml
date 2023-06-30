@@ -67,14 +67,15 @@ let number_of_vertices (g : graph) = Array.length g.v;;
 
 let degree (g : graph) (i : int) : int = g.v.(i).d;;
 
+let is_present_vert (g : graph) (i : int) : bool = g.v.(i).vert_present;;
+
 (* Returns the ends of the present edges in el *)
 let edge_list_to_neighbors (el : edge list) : int list =
     List.map (fun e -> e.edge_end)	(List.filter (fun e -> e.edge_present) el);;
 
 (* Returns the indices of the neighbors of the vertex of index i *)
-let neighbors (g : graph) (i : int) : int list = edge_list_to_neighbors g.e.(i);;
-
-let is_present_vert (g : graph) (i : int) : bool = g.v.(i).vert_present;;
+let neighbors (g : graph) (i : int) : int list =
+	List.filter (is_present_vert g) (edge_list_to_neighbors g.e.(i));;
 
 let flip_vert (g : graph) (i : int) : unit =
 	if (i < 0) || (i > number_of_vertices g)
@@ -240,10 +241,12 @@ let copy_of_graph (g : graph) : graph =
 	{v = v'; e = e'};;
 
 (* Generates a basic embedding of a graph, in a window 1200*600 *)
-let generate_embedding (n : int) =
-	let x = 1200. in
-	let y = 600. in
+let generate_embedding (n : int) : vertex_coordinates list =
+	let width = 1200. in
+	let height = 600. in
 	let pi = 3.14159265 in
 	let theta = 2.*.pi/.(float_of_int n) in
-	let r = 0.33 *. y in
-	List.map (fun i -> (i,(int_of_float ((x/.2.)+.r*.cos ((float_of_int i)*.theta)),int_of_float ((y/.2.)+.r*.sin ((float_of_int i)*.theta))))) (range n);;
+	let r = 0.33 *. height in
+	let x i = int_of_float ((width/.2.)+.r*.cos ((float_of_int i)*.theta)) in
+	let y i = int_of_float ((height/.2.)+.r*.sin ((float_of_int i)*.theta)) in
+	List.map (fun i -> (i,(x i, y i))) (range n);;

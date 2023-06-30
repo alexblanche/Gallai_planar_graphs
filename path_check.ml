@@ -29,7 +29,7 @@ let is_a_path (cg : colored_graph) (col : color) =
   if List.exists save_and_check vcol
     then false
     else (* Second check: there are exactly two vertices of degree 1 *)
-      if (count (fun i -> save_and_check.(i) = 1) vcol) <> 2
+      if (count (fun i -> count_touch.(i) = 1) vcol) <> 2
         then false
         else (* Final check: there is only one col component *)
           (let uf = init_union_find n in
@@ -47,4 +47,4 @@ let is_a_path_decomposition (cg : colored_graph) =
 
 (* Checks that the coloring of the colored graph cg is a floor(n/2)-path-decomposition *)
 let is_a_good_decomposition (cg : colored_graph) =
-  (is_a_path_decomposition cg) && (number_of_colors cg <= n/2);;
+  (is_a_path_decomposition cg) && (number_of_colors cg <= (number_of_vertices cg.cg)/2);;

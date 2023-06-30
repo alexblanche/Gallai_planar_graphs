@@ -126,7 +126,7 @@ let add_edges (vlp : vertex_coordinates list) (elp : simple_edge list) : simple_
 			if vopt <> None then
 				if not !selec then (* Selection of the first vertex of the new edge *)
 					begin
-						first_vertex := (let Some v = vopt in v);
+						first_vertex := option_get vopt;
 						let (_,(x,y)) = !first_vertex in
 						draw_vertex x y red;
 						synchronize ();
@@ -135,7 +135,7 @@ let add_edges (vlp : vertex_coordinates list) (elp : simple_edge list) : simple_
 				else (* Selection of the second vertex of the new edge *)
 					begin
 						let (c,_) = !first_vertex in
-						let (d,_) = (let Some v = vopt in v) in
+						let (d,_) = option_get vopt in
 						if c<>d then
 							(el := (c,d)::!el;
 							added_el := (c,d)::!added_el;
@@ -167,7 +167,7 @@ let modify_embedding (vlp : vertex_coordinates list) (elp : simple_edge list) : 
 			let i = (* Index of the vertex on which the user has clicked *)
 				let vopt = closest_vertex mouse_x mouse_y (5.*.float_of_int vertex_radius) !vl in
 				if vopt <> None
-					then (let Some (i,_) = vopt in i)
+					then (let (i,_) = option_get vopt in i)
 					else -1
 			in
 			
@@ -212,12 +212,47 @@ let print_graph (g : graph) (vl : vertex_coordinates list) : unit =
 	wait_for_space ();
 	close_graph ();;
 
-(* Test of the basic embedding *)
-(*
-let test n =
-	let vl = generate_embedding n in
-	let g = list_of_edges_to_graph n [] in
-	print_graph g vl
-in
-test 50;;
-*)
+
+(* Testing *)
+
+let print_colors () =
+	let side = 30 in
+	let ncol = 8 in
+	init();
+	let col_tab = [|black; white; red; green; blue; yellow; cyan; magenta|] in
+	for i=0 to ncol-1 do
+		set_color col_tab.(i);
+		fill_rect (side*(i+1)) (size_y() - 70) side side;
+		synchronize ();
+		for j=i to ncol-1 do
+			let (ri,gi,bi) = int_to_rgb col_tab.(i) in
+			let (rj,gj,bj) = int_to_rgb col_tab.(j) in
+			let (r,g,b) = ((ri+rj)/2, (gi+gj)/2, (bi+bj)/2) in
+			print_rgb r g b;
+
+			set_color (rgb r g b);
+			fill_rect (side*(j+1)) (size_y() - 70 - (i+1)*side) side side;
+			synchronize ()
+		done;
+	done;
+	let actual_col_tab = [|(0,0,0);	(127,127,127); (127,0,0);	(0,127,0); (0,0,127); (127,127,0);	(0,127,127); (127,0,127);
+	(255,255,255); (255,127,127);	(127,255,127); (127,127,255);	(255,255,127); (127,255,255);	(255,127,255);
+	(255,0,0); (127,127,0);	(127,0,127); (255,127,0);	(127,127,127); (255,0,127);
+	(0,255,0); (0,127,127); (127,255,0); (0,255,127);	(127,127,127);
+	(0,0,255); (127,127,127);	(0,127,255); (127,0,255);
+	(255,255,0); (127,255,127);	(255,127,127);
+	(0,255,255); (127,127,255);
+	(255,0,255)|] in
+	let ancol = Array.length actual_col_tab in
+	for i=0 to ancol-1 do
+		let (ri,gi,bi) = actual_col_tab.(i) in
+		let ci = rgb ri gi bi in
+		set_color ci;
+		fill_rect (side*(i+1)) 200 side side;
+		moveto (side*(i+1)+(side/4)) 180;
+		draw_string (string_of_int i);
+		synchronize ()
+	done;
+	wait_for_space ();
+	close_graph ();;
+(* print_colors ();; *)

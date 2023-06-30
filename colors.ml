@@ -53,7 +53,7 @@ let generic_coloring (g : graph) =
 
 (* generic_coloring g2;; *)
   
-(* Greedy algorithm that gives a naive path-coloring of a graph *)
+(* Greedy algorithm that gives a naive path-coloring of the vertices in the list vl *)
 (* Temporary function, only for testing purposes, not to be used in the final program *)
 let naive_coloring (cg : colored_graph) (vl : int list) =
   (* Returns true if at least one edge was found *)
@@ -73,7 +73,7 @@ let naive_coloring (cg : colored_graph) (vl : int list) =
     | [] -> false
     | [_] -> add_path i c
     | e1::e2::_ -> (let _ = add_path i c in
-              add_path i c)
+      add_path i c)
   in
   (* Applies new colors until all edges incident with i are colored *)
   let rec loop (i : int) (c : color) =
@@ -91,7 +91,7 @@ let naive_coloring (cg : colored_graph) (vl : int list) =
 (* Colors a path with color col *)
 let color_path (cg : colored_graph) (p : int list) (col : color) =
   let aux prec l = List.fold_left (fun pr a -> set_color cg pr a col; a) prec l in
-  match c with
+  match p with
     | [] -> failwith "color_path: error 1"
     | [_] -> failwith "color_path: error 2"
     | a::b::t -> let _ = aux a (b::t) in ();;

@@ -83,3 +83,27 @@ let min_list (l : 'a list) (f : 'a -> float) =
 	match l with
 		| [] -> raise Not_found
 		| h::t -> List.fold_left (fun a x -> if f x < f a then x else a) h t;;
+
+(* Returns the value v if o is Some v, and raises Invalid_argument otherwise *)
+let option_get (o : 'a option) : 'a =
+	match o with
+		| Some v -> v
+		| None -> raise (Invalid_argument "None");;
+
+(* Returns a tuple (r,g,b) corresponding to the Graphics.color col *)
+(* r,g,b belong to 0..255 *)
+let int_to_rgb (col : Graphics.color) =
+	let b = col mod 256 in
+	let rg = col / 256 in
+	let g = rg mod 256 in
+	let r = rg/256 in
+	(r,g,b);;
+
+let print_rgb r g b =
+	print_string "(";
+	print_int r;
+	print_string ",";
+	print_int g;
+	print_string ",";
+	print_int b;
+	print_endline ")";;

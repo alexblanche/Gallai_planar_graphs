@@ -64,16 +64,17 @@ let undo_reds (g : graph) (opl : operation list) =
 let recolor (cg : colored_graph) (reco : recoloring) =
 	match reco with
 		| NEW_COLOR(l) -> let c = new_color cg in
-										color_pair_vertices cg l c
-		| RECOLOR((a,b),l) -> let Some c = get_color cg a b in
-										color_pair_vertices cg l c
-		| DEVIATE((i,j),u) -> let Some c = get_color cg i j in
-									  (set_color cg u i c; set_color cg u j c)
+			color_pair_vertices cg l c
+		| RECOLOR((a,b),l) -> let c = option_get (get_color cg a b) in
+			color_pair_vertices cg l c
+		| DEVIATE((i,j),u) -> let c = option_get (get_color cg i j) in
+			(set_color cg u i c; set_color cg u j c)
 		| EXTEND(k,l) -> let neigh = neighbors cg.cg k in
-								let cl = List.map (fun i -> let Some c = get_color cg k i in c)
-														 neigh in
-								let c = find_unique cl in
-								color_pair_vertices cg l c;;
+			let cl =
+				List.map (fun i -> option_get (get_color cg k i)) neigh
+			in
+			let c = find_unique cl in
+			color_pair_vertices cg l c;;
 
 let recolorl (cg : colored_graph) (recol : recoloring list) =
 	List.iter (recolor cg) recol;;
