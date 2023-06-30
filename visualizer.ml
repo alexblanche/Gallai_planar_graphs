@@ -3,9 +3,6 @@
 #load "Graphics.cma";;
 open Graphics;;
 
-(* Constants *)
-let vertex_radius = 4;;
-
 (* Euclidian distance *)
 let dist (x : int) (y : int) (a : int) (b : int) =
 	let (x',y',a',b') =
@@ -212,47 +209,3 @@ let print_graph (g : graph) (vl : vertex_coordinates list) : unit =
 	wait_for_space ();
 	close_graph ();;
 
-
-(* Testing *)
-
-let print_colors () =
-	let side = 30 in
-	let ncol = 8 in
-	init();
-	let col_tab = [|black; white; red; green; blue; yellow; cyan; magenta|] in
-	for i=0 to ncol-1 do
-		set_color col_tab.(i);
-		fill_rect (side*(i+1)) (size_y() - 70) side side;
-		synchronize ();
-		for j=i to ncol-1 do
-			let (ri,gi,bi) = int_to_rgb col_tab.(i) in
-			let (rj,gj,bj) = int_to_rgb col_tab.(j) in
-			let (r,g,b) = ((ri+rj)/2, (gi+gj)/2, (bi+bj)/2) in
-			print_rgb r g b;
-
-			set_color (rgb r g b);
-			fill_rect (side*(j+1)) (size_y() - 70 - (i+1)*side) side side;
-			synchronize ()
-		done;
-	done;
-	let actual_col_tab = [|(0,0,0);	(127,127,127); (127,0,0);	(0,127,0); (0,0,127); (127,127,0);	(0,127,127); (127,0,127);
-	(255,255,255); (255,127,127);	(127,255,127); (127,127,255);	(255,255,127); (127,255,255);	(255,127,255);
-	(255,0,0); (127,127,0);	(127,0,127); (255,127,0);	(127,127,127); (255,0,127);
-	(0,255,0); (0,127,127); (127,255,0); (0,255,127);	(127,127,127);
-	(0,0,255); (127,127,127);	(0,127,255); (127,0,255);
-	(255,255,0); (127,255,127);	(255,127,127);
-	(0,255,255); (127,127,255);
-	(255,0,255)|] in
-	let ancol = Array.length actual_col_tab in
-	for i=0 to ancol-1 do
-		let (ri,gi,bi) = actual_col_tab.(i) in
-		let ci = rgb ri gi bi in
-		set_color ci;
-		fill_rect (side*(i+1)) 200 side side;
-		moveto (side*(i+1)+(side/4)) 180;
-		draw_string (string_of_int i);
-		synchronize ()
-	done;
-	wait_for_space ();
-	close_graph ();;
-(* print_colors ();; *)

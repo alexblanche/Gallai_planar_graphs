@@ -1,14 +1,15 @@
 (** Main program **)
 
+#use "constants.ml";;
 #use "miscellaneous.ml";;
 #use "graph_types.ml";;
-#use "dijkstra.ml";;
+#use "libraries/dijkstra.ml";;
 #use "colors.ml";;
 #use "reductions.ml";;
 #use "configC0.ml";;
 #use "configC1.ml";;
 #use "configC2.ml";;
-#use "union_find.ml";;
+#use "libraries/union_find.ml";;
 #use "path_check.ml";;
 #use "components.ml";;
 #use "visualizer.ml";;
