@@ -1,5 +1,9 @@
 (** Main program **)
 
+(* Requires library ocamlfind *)
+#use "topfind";;
+#require "graphics";;
+
 #use "constants.ml";;
 #use "miscellaneous.ml";;
 #use "graph_types.ml";;

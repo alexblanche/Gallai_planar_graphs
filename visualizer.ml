@@ -1,6 +1,5 @@
 (* Graphical interface for graphs *)
 
-#load "Graphics.cma";;
 open Graphics;;
 
 (* Euclidian distance *)
