@@ -56,13 +56,13 @@ let recolor (cg : colored_graph) (reco : recoloring) =
 	match reco with
 		| NEW_COLOR(l) -> let c = new_color cg in
 			color_pair_vertices cg l c
-		| RECOLOR((a,b),l) -> let c = option_get (get_color cg a b) in
+		| RECOLOR((a,b),l) -> let c = option_get (get_edge_color cg a b) in
 			color_pair_vertices cg l c
-		| DEVIATE((i,j),u) -> let c = option_get (get_color cg i j) in
-			(set_color cg u i c; set_color cg u j c)
+		| DEVIATE((i,j),u) -> let c = option_get (get_edge_color cg i j) in
+			(set_edge_color cg u i c; set_edge_color cg u j c)
 		| EXTEND(k,l) -> let neigh = neighbors cg.cg k in
 			let cl =
-				List.map (fun i -> option_get (get_color cg k i)) neigh
+				List.map (fun i -> option_get (get_edge_color cg k i)) neigh
 			in
 			let c = find_unique cl in
 			color_pair_vertices cg l c;;

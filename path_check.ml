@@ -8,7 +8,7 @@
 (* vl : int list *)
 let vertices_col cg col vl = List.filter (fun i -> touches_color cg i col) vl;;
 
-let is_color_col cg col i e = (get_color cg i e.edge_end) = Some col;;
+let is_color_col cg col i e = (get_edge_color cg i e.edge_end) = Some col;;
 
 (* Edges incident with i that are colored col *)
 let neigh_col cg col i = List.filter (is_color_col cg col i) (present_edges cg.cg i);;

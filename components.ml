@@ -9,7 +9,7 @@ let is_component_k3 (g : graph) (vl : int list) =
 let color_k3 (cg : colored_graph) (vl : int list) =
   let c = new_color cg in
   match vl with
-    | [v1;v2;v3] -> (set_color cg v1 v2 c; set_color cg v1 v3 c; set_color cg v2 v3 c)
+    | [v1;v2;v3] -> (set_edge_color cg v1 v2 c; set_edge_color cg v1 v3 c; set_edge_color cg v2 v3 c)
     | _ -> failwith "color_k3: component is not a K3";;
   
 let is_component_k5m (g : graph) (vl : int list) =
@@ -118,7 +118,7 @@ let color_1inter (cg : colored_graph) (p : int list) (i1 : int) (c : int list) (
     | [] -> failwith "color_1inter: empty cycle"
     | ch::_ -> (color_cycle cg ch c c2;
              let (j1,_) = find_succ_cycle i1 c in
-             set_color cg i1 j1 c1;
+             set_edge_color cg i1 j1 c1;
              color_path_two_colors cg i1 c1 c2 p);;
   
 let color_2inter (cg : colored_graph) (p : int list) (i1 : int) (i2 : int) (c : int list) (c1 : color) (c2 : color) =
@@ -126,7 +126,7 @@ let color_2inter (cg : colored_graph) (p : int list) (i1 : int) (i2 : int) (c : 
     | [] -> failwith "color_2inter: empty cycle"
     | ch::_ -> (color_cycle cg ch c c2;
              let (j2,j2') = find_succ_cycle i2 c in
-             set_color cg i2 (if List.mem j2 p then j2' else j2) c1;
+             set_edge_color cg i2 (if List.mem j2 p then j2' else j2) c1;
              color_path_two_colors cg i2 c1 c2 p);;
 *)
   
@@ -137,9 +137,9 @@ let color_ninter (cg : colored_graph) (p : int list) (c : int list) (i4 : int) (
     | ch ::_ -> (color_cycle cg ch c c2;
               let (j5,j5') = find_succ_cycle i5 c in
               if not (List.mem j5 p)
-                then (set_color cg i5 j5 c1; color_path_two_colors cg i5 c1 c2 p)
+                then (set_edge_color cg i5 j5 c1; color_path_two_colors cg i5 c1 c2 p)
                 else if not (List.mem j5' p)
-                  then (set_color cg i5 j5' c1; color_path_two_colors cg i5 c1 c2 p)
+                  then (set_edge_color cg i5 j5' c1; color_path_two_colors cg i5 c1 c2 p)
                   else
 *)
 (* Does not work *)
@@ -155,7 +155,7 @@ let decompPC1 (cg : colored_graph) (p : int list) (c : int list) (i1 : int) (c1 
   color_until cg i1 p c1;
   color_from cg i1 p c2;
   color_cycle cg c c1;
-  set_color cg i1 (if not (List.mem j1 p) then j1 else j1') c2;;
+  set_edge_color cg i1 (if not (List.mem j1 p) then j1 else j1') c2;;
  
 (* We assume j1,j1' belong to p *)
 (* j2,j3 = predecessors of j1,j1' resp. on P *)
@@ -167,8 +167,8 @@ let decompPC2 (cg : colored_graph) (p : int list) (c : int list) (i1 : int) (c1 
   let aux (j1 : int) (j1' : int) (j2 : int) (j3 : int) =
     color_until cg i1 p c1;
     color_cycle cg c c1;
-    set_color cg i1 j1 c2;
-    set_color cg j1 j2 c1;
+    set_edge_color cg i1 j1 c2;
+    set_edge_color cg j1 j2 c1;
     color_section cg i1 j2 p c2;
     color_from cg j1 p c2
   in

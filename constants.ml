@@ -29,3 +29,5 @@ let color_list = [|
 (* Radius of the vertices in the graphical interface *)
 let vertex_radius = 4;;
 
+(* Width of the colored edges in the graphical interface (uncolored have width 1) *)
+let edge_width = 3;

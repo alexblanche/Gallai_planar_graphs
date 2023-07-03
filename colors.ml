@@ -19,10 +19,10 @@ type colored_graph = {cg : graph; cc : coloring; mutable nc : int};;
 let graph_to_colored_graph (g : graph) =
 	{cg = g; cc = empty_coloring (number_of_vertices g); nc = 0};;
 
-let get_color (cg : colored_graph) (i : int) (j : int) =
+let get_edge_color (cg : colored_graph) (i : int) (j : int) =
 	cg.cc.(i).(j);;
 
-let set_color (cg : colored_graph) (i : int) (j : int) (c : color) =
+let set_edge_color (cg : colored_graph) (i : int) (j : int) (c : color) =
 	cg.cc.(i).(j) <- Some c;
 	cg.cc.(j).(i) <- Some c;;
 
@@ -37,20 +37,20 @@ let new_color (cg : colored_graph) =
 
 (* Colors with color c all the edges ij encoded as pairs of vertices (i,j) in the list l *)
 let color_pair_vertices (cg : colored_graph) (l : (int * int) list) (c : color) =
-  List.iter (fun (i,j) -> set_color cg i j c) l;;
+  List.iter (fun (i,j) -> set_edge_color cg i j c) l;;
 
 (* Returns true if vertex i touches color c in the colored graph cg *)
 let touches_color (cg : colored_graph) (i : int) (c : color) =
   let el = present_edges cg.cg i in
-  let f e = get_color cg i e.edge_end = Some c in
+  let f e = get_edge_color cg i e.edge_end = Some c in
   List.exists f el;;
 
 (* Build a generic coloring: each edge has a different color *)
-let generic_coloring (g : graph) =
+let generic_coloring (g : graph) : colored_graph =
 	let cg = graph_to_colored_graph g in
 	let treat_edge i e =
-		if (is_present_edge g i e.edge_end && get_color cg i e.edge_end = None)
-			then set_color cg i e.edge_end (new_color cg)
+		if (is_present_edge g i e.edge_end && get_edge_color cg i e.edge_end = None)
+			then set_edge_color cg i e.edge_end (new_color cg)
 	in
 	let rec aux ela i =
 		if (i = number_of_vertices g)
@@ -64,13 +64,13 @@ let generic_coloring (g : graph) =
   
 (* Greedy algorithm that gives a naive path-coloring of the vertices in the list vl *)
 (* Temporary function, only for testing purposes, not to be used in the final program *)
-let naive_coloring (cg : colored_graph) (vl : int list) =
+let naive_coloring (cg : colored_graph) (vl : int list) : unit =
   (* Returns true if at least one edge was found *)
   let rec add_path_aux (b : bool) (i : int) (c : color) =
     try
-      let f e = ((get_color cg i e.edge_end) = None) && (List.mem e.edge_end vl) && not (touches_color cg e.edge_end c) in
+      let f e = ((get_edge_color cg i e.edge_end) = None) && (List.mem e.edge_end vl) && not (touches_color cg e.edge_end c) in
       let j = List.find f (present_edges cg.cg i) in
-      set_color cg i j.edge_end c;
+      set_edge_color cg i j.edge_end c;
       add_path_aux true j.edge_end c
     with
       | Not_found -> b
@@ -99,7 +99,7 @@ let naive_coloring (cg : colored_graph) (vl : int list) =
 
 (* Colors a path with color col *)
 let color_path (cg : colored_graph) (p : int list) (col : color) =
-  let aux prec l = List.fold_left (fun pr a -> set_color cg pr a col; a) prec l in
+  let aux prec l = List.fold_left (fun pr a -> set_edge_color cg pr a col; a) prec l in
   match p with
     | [] -> failwith "color_path: error 1"
     | [_] -> failwith "color_path: error 2"
@@ -109,21 +109,21 @@ let color_path (cg : colored_graph) (p : int list) (col : color) =
 let color_cycle (cg : colored_graph) (c : int list) (col : color) =
   (*let rec aux prec = function
     | [] -> failwith "color_cycle: error 3"
-    | [a] -> (set_color cg prec a col; a)
-    | a::t -> (set_color cg prec a col; aux a t)
+    | [a] -> (set_edge_color cg prec a col; a)
+    | a::t -> (set_edge_color cg prec a col; aux a t)
   in
   *)
-  let aux prec l = List.fold_left (fun pr a -> set_color cg pr a col; a) prec l in
+  let aux prec l = List.fold_left (fun pr a -> set_edge_color cg pr a col; a) prec l in
   match c with
     | [] -> failwith "color_cycle: error 1"
     | [_] -> failwith "color_cycle: error 2"
-    | a::b::t -> let last = aux a (b::t) in set_color cg a last col;;
+    | a::b::t -> let last = aux a (b::t) in set_edge_color cg a last col;;
 
 (* Color the path p with color c1 from the beginning to vertex i *)
 let color_until (cg : colored_graph) (i : int) (p : int list) (c1 : color) =
   let rec aux prec = function
     | [] -> ()
-    | h::t -> (set_color cg prec h c1; if h<>i then aux h t)
+    | h::t -> (set_edge_color cg prec h c1; if h<>i then aux h t)
   in
   match p with
     | [] -> ()
@@ -147,8 +147,8 @@ let color_from (cg : colored_graph) (i1 : int) (p : int list) (c1 : color) =
 let rec color_path_two_colors (cg : colored_graph) (i1 : int) (c1 : color) (c2 : int) = function
     | ph::ps::pt ->
       if ps=i1
-        then (set_color cg ph ps c1; color_path cg (ps::pt) c2)
-        else (set_color cg ph ps c1; color_path_two_colors cg i1 c1 c2 (ps::pt))
+        then (set_edge_color cg ph ps c1; color_path cg (ps::pt) c2)
+        else (set_edge_color cg ph ps c1; color_path_two_colors cg i1 c1 c2 (ps::pt))
     | _ -> ();;
 (* Alternative: less efficient
 let color_path_two_colors cg i c1 c2 =

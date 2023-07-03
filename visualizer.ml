@@ -12,11 +12,11 @@ let dist (x : int) (y : int) (a : int) (b : int) =
 
 (* Draws a vertex with radius vertex_radius, in color col, on coordinates (x,y) *)
 let draw_vertex (x : int) (y : int) (col : Graphics.color) =
-	draw_circle x y vertex_radius;
 	let fg = foreground in
 	set_color col;
-	fill_circle x y (vertex_radius-1);
-	set_color fg;;
+	fill_circle x y (vertex_radius-0);
+	set_color fg;
+	draw_circle x y vertex_radius;;
 
 (* Draws an edge between points of coordinates (x,y) and (a,b) *)
 let draw_edge (x : int) (y : int) (a : int) (b : int) =
@@ -201,6 +201,7 @@ let wait_for_space () : unit =
 		exit := key = ' '
 	done;;
 
+(* Displays the graph g, with the coordinates of the vertices given by vl *)
 let print_graph (g : graph) (vl : vertex_coordinates list) : unit =
 	let el = graph_to_list_of_edges g in
 	init ();
@@ -208,3 +209,41 @@ let print_graph (g : graph) (vl : vertex_coordinates list) : unit =
 	wait_for_space ();
 	close_graph ();;
 
+
+(** Color management **)
+
+(* Displays the background with the function bg, then the vertices in the list vl
+	 and the edges in the list el, with colors given by the coloring cc *)
+let display_color (vl : vertex_coordinates list) (el : simple_edge list) (bg : unit -> unit) (cg : colored_graph) =
+	let display_edge_pair_color (i,j) =
+		let (x,y) = List.assoc i vl in
+		let (z,u) = List.assoc j vl in
+		match get_edge_color cg i j with
+			| Some c ->
+				(let (r,g,b) = color_list.(c) in
+				set_color (rgb r g b);
+				moveto x y;
+				lineto z u)
+			| None ->
+				(set_color black;
+				set_line_width 1;
+				draw_edge x y z u;
+				set_line_width edge_width)
+	in
+	clear_graph ();
+	moveto 0 0;
+	bg ();
+	set_line_width edge_width;
+	List.iter display_edge_pair_color el;
+	set_line_width 1;
+	set_color black;
+	List.iter (fun (_,(x,y)) -> draw_vertex x y white) vl;
+	synchronize ();;
+
+(* Displays the colored graph cg, with the coordinates of the vertices given by vl *)
+let print_colored_graph (cg: colored_graph) (vl : vertex_coordinates list) : unit =
+	let el = graph_to_list_of_edges cg.cg in
+	init ();
+	display_color vl el (fun () -> ()) cg;
+	wait_for_space ();
+	close_graph ();;
